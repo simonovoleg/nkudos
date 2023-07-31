@@ -46,12 +46,12 @@ const inputForm = SampleWorkflow.addStep(
           name: "channel",
           title: "Channel to send message to",
           type: Schema.slack.types.channel_id,
-          default: "C05JH69RX2A"
+          // default: "C05JH69RX2A"
         }, 
         {
           name: "receiver",
           title: "Receiver",
-          type: Schema.slack.types.user
+          type: Schema.slack.types.user_id
         },
         {
           name: "message",
