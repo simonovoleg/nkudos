@@ -1,5 +1,5 @@
 import { DefineWorkflow, Schema } from "deno-slack-sdk/mod.ts";
-import { SampleFunctionDefinition } from "../functions/sample_function.ts";
+import { functionDefinition } from "../functions/function.ts";
 
 /**
  * A workflow is a set of steps that are executed in order.
@@ -9,10 +9,10 @@ import { SampleFunctionDefinition } from "../functions/sample_function.ts";
  * This workflow uses interactivity. Learn more at:
  * https://api.slack.com/automation/forms#add-interactivity
  */
-const SampleWorkflow = DefineWorkflow({
-  callback_id: "sample_workflow",
-  title: "Sample workflow",
-  description: "A sample workflow",
+const workflow = DefineWorkflow({
+  callback_id: "workflow",
+  title: "The workflow",
+  description: "The main workflow",
   input_parameters: {
     properties: {
       interactivity: {
@@ -34,11 +34,11 @@ const SampleWorkflow = DefineWorkflow({
  * OpenForm Slack function as a first step.
  * https://api.slack.com/automation/functions#open-a-form
  */
-const inputForm = SampleWorkflow.addStep(
+const inputForm = workflow.addStep(
   Schema.slack.functions.OpenForm,
   {
     title: "Send message to channel",
-    interactivity: SampleWorkflow.inputs.interactivity,
+    interactivity: workflow.inputs.interactivity,
     submit_label: "Send message",
     fields: {
       elements: [
@@ -72,9 +72,9 @@ const inputForm = SampleWorkflow.addStep(
  * outputs, just like typical programmatic functions.
  * https://api.slack.com/automation/functions/custom
  */
-const sampleFunctionStep = SampleWorkflow.addStep(SampleFunctionDefinition, {
+const functionStep = workflow.addStep(functionDefinition, {
   message: inputForm.outputs.fields.message,
-  user: SampleWorkflow.inputs.user,
+  user: workflow.inputs.user,
 });
 
 /**
@@ -83,9 +83,9 @@ const sampleFunctionStep = SampleWorkflow.addStep(SampleFunctionDefinition, {
  * a message and can be used alongside custom functions in a workflow.
  * https://api.slack.com/automation/functions
  */
-SampleWorkflow.addStep(Schema.slack.functions.SendMessage, {
+workflow.addStep(Schema.slack.functions.SendMessage, {
   channel_id: inputForm.outputs.fields.channel,
-  message: sampleFunctionStep.outputs.updatedMsg,
+  message: functionStep.outputs.updatedMsg,
 });
 
-export default SampleWorkflow;
+export default workflow;
