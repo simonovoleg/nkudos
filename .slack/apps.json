@@ -1,1 +1,11 @@
-{}
+{
+  "apps": {
+    "T05JLT71YDT": {
+      "app_id": "A05LAGVAZ7S",
+      "IsDev": false,
+      "team_domain": "nkudos",
+      "team_id": "T05JLT71YDT"
+    }
+  },
+  "default": "nkudos"
+}

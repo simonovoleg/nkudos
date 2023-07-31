@@ -1,5 +1,5 @@
 import { DefineFunction, Schema, SlackFunction } from "deno-slack-sdk/mod.ts";
-import SampleObjectDatastore from "../datastores/sample_datastore.ts";
+import OpenFormbjectDatastore from "../datastores/datastore.ts";
 
 /**
  * Functions are reusable building blocks of automation that accept
@@ -7,11 +7,11 @@ import SampleObjectDatastore from "../datastores/sample_datastore.ts";
  * be used independently or as steps in workflows.
  * https://api.slack.com/automation/functions/custom
  */
-export const SampleFunctionDefinition = DefineFunction({
-  callback_id: "sample_function",
-  title: "Sample function",
-  description: "A sample function",
-  source_file: "functions/sample_function.ts",
+export const functionDefinition = DefineFunction({
+  callback_id: "function",
+  title: "Main function",
+  description: "The main function",
+  source_file: "functions/function.ts",
   input_parameters: {
     properties: {
       message: {
@@ -43,27 +43,27 @@ export const SampleFunctionDefinition = DefineFunction({
  * https://api.slack.com/automation/functions/custom
  */
 export default SlackFunction(
-  SampleFunctionDefinition,
+  functionDefinition,
   async ({ inputs, client }) => {
     const uuid = crypto.randomUUID();
 
-    // inputs.user is set from the interactivity_context defined in sample_trigger.ts
+    // inputs.user is set from the interactivity_context defined in trigger.ts
     // https://api.slack.com/automation/forms#add-interactivity
     const updatedMsg = `:wave: ` + `<@${inputs.user}>` +
       ` submitted the following message: \n\n>${inputs.message}`;
 
-    const sampleObject = {
+    const newObject = {
       original_msg: inputs.message,
       updated_msg: updatedMsg,
       object_id: uuid,
     };
 
-    // Save the sample object to the datastore
+    // Save the newObject to the datastore
     // https://api.slack.com/automation/datastores
-    await client.apps.datastore.put<typeof SampleObjectDatastore.definition>(
+    await client.apps.datastore.put<typeof objectDatastore.definition>(
       {
-        datastore: "SampleObjects",
-        item: sampleObject,
+        datastore: "Objects",
+        item: newObject,
       },
     );
 
