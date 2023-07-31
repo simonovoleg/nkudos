@@ -5,6 +5,8 @@ import { DefineDatastore, Schema } from "deno-slack-sdk/mod.ts";
  * and retrieve data for your app.
  * https://api.slack.com/automation/datastores
  */
+
+// Hello world
 const SampleObjectDatastore = DefineDatastore({
   name: "SampleObjects",
   primary_key: "object_id",
