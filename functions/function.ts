@@ -63,7 +63,7 @@ export default SlackFunction(
     // https://api.slack.com/automation/forms#add-interactivity
     const updatedMsg = `:tada: ` + `Congrats <@${inputs.receiver}>!!` +
       ` You just received an nKudo from <@${inputs.user}> \n\n>*nKudo value*: ${inputs.kudo_value} \n>*message*: ${inputs.message} \n\n ${
-        inputs.scope ? "Sent privately" : ""
+        inputs.scope ? "_Sent privately_" : ""
       }`;
 
     const newObject = {
