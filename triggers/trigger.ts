@@ -7,9 +7,9 @@ import Workflow from "../workflows/workflow.ts";
  * such as a user pressing a button or when a specific event occurs.
  * https://api.slack.com/automation/triggers
  */
-const trigger: Trigger<typeof Workflow.definition> = {
+const nkudos: Trigger<typeof Workflow.definition> = {
   type: TriggerTypes.Shortcut,
-  name: " trigger",
+  name: "nkudos",
   description: "A trigger",
   workflow: `#/workflows/${Workflow.definition.callback_id}`,
   inputs: {
@@ -25,4 +25,4 @@ const trigger: Trigger<typeof Workflow.definition> = {
   },
 };
 
-export default trigger;
+export default nkudos;

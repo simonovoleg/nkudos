@@ -1,4 +1,4 @@
-import { DefineWorkflow, Schema } from "deno-slack-sdk/mod.ts";
+import { DefineWorkflow, DefineType, Schema } from "deno-slack-sdk/mod.ts";
 import { functionDefinition } from "../functions/function.ts";
 
 /**
@@ -9,6 +9,18 @@ import { functionDefinition } from "../functions/function.ts";
  * This workflow uses interactivity. Learn more at:
  * https://api.slack.com/automation/forms#add-interactivity
  */
+const CustomType = DefineType({
+  name: "received_nkudos",
+  type: Schema.types.object,
+  properties: {
+    from: { type: Schema.types.string },
+    value: { type: Schema.types.string },
+    message: { type: Schema.types.string },
+    received_at: { type: Schema.types.string }
+  },
+  required: ["from", "value", "message", "received_at"],
+});
+
 const workflow = DefineWorkflow({
   callback_id: "workflow",
   title: "The workflow",
@@ -24,8 +36,14 @@ const workflow = DefineWorkflow({
       user: {
         type: Schema.slack.types.user_id,
       },
+      received_nkudos: {
+        type: Schema.types.array,
+        items: {
+          type: CustomType
+        }
+      }
     },
-    required: ["user", "interactivity"],
+    required: ["user", "interactivity", "received_nkudos"],
   },
 });
 
@@ -92,7 +110,7 @@ const functionStep = workflow.addStep(functionDefinition, {
  */
 workflow.addStep(Schema.slack.functions.SendMessage, {
   channel_id: "C05JH69RX2A",
-  message: functionStep.outputs.updatedMsg,
+  message: functionStep.outputs.nKudoMessage,
 });
 
 export default workflow;

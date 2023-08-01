@@ -1,5 +1,6 @@
 import { DefineFunction, Schema, SlackFunction } from "deno-slack-sdk/mod.ts";
 import OpenFormbjectDatastore from "../datastores/datastore.ts";
+import { UserDatastore } from "../datastores/users.ts";
 
 /**
  * Functions are reusable building blocks of automation that accept
@@ -35,12 +36,12 @@ export const functionDefinition = DefineFunction({
   },
   output_parameters: {
     properties: {
-      updatedMsg: {
+      nKudoMessage: {
         type: Schema.types.string,
         description: "Updated message to be posted",
       },
     },
-    required: ["updatedMsg"],
+    required: ["nKudoMessage"],
   },
 });
 
@@ -53,28 +54,34 @@ export const functionDefinition = DefineFunction({
 export default SlackFunction(
   functionDefinition,
   async ({ inputs, client }) => {
-    const uuid = crypto.randomUUID();
+    const slack_id = inputs.user;
 
     // inputs.user is set from the interactivity_context defined in trigger.ts
     // https://api.slack.com/automation/forms#add-interactivity
-    const updatedMsg = `:tada: ` + `Congrats <@${inputs.receiver}>!!` +
+    const nKudoMessage = `:tada: ` + `Congrats <@${inputs.receiver}>!!` +
       ` You just received an nKudo from <@${inputs.user}> \n\n>*nKudo value*: ${inputs.kudo_value} \n>*message*: ${inputs.message}`;
 
     const newObject = {
-      original_msg: inputs.message,
-      updated_msg: updatedMsg,
-      object_id: uuid,
+      id: inputs.receiver,
+      giving_points: 5,
+      received_nkudos: [{
+        from: slack_id,
+        value: inputs.kudo_value,
+        message: inputs.message,
+        received_at: new Date(),
+      }],
     };
 
+    console.log(newObject);
     // Save the newObject to the datastore
     // https://api.slack.com/automation/datastores
-    await client.apps.datastore.put<typeof objectDatastore.definition>(
+    await client.apps.datastore.put<typeof UserDatastore.definition>(
       {
-        datastore: "Objects",
+        datastore: "users",
         item: newObject,
       },
     );
 
-    return { outputs: { updatedMsg } };
+    return { outputs: { nKudoMessage } };
   },
 );
