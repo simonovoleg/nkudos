@@ -22,6 +22,14 @@ export const SampleFunctionDefinition = DefineFunction({
         type: Schema.slack.types.user_id,
         description: "The user invoking the workflow",
       },
+      receiver: {
+        type: Schema.slack.types.user_id,
+        description: "The user receiving a kudo",
+      },
+      kudo_value: {
+        type: Schema.types.string,
+        description: "An nKudo value",
+      },
     },
     required: ["message"],
   },
@@ -49,8 +57,8 @@ export default SlackFunction(
 
     // inputs.user is set from the interactivity_context defined in sample_trigger.ts
     // https://api.slack.com/automation/forms#add-interactivity
-    const updatedMsg = `:wave: ` + `<@${inputs.user}>` +
-      ` submitted the following message: \n\n>${inputs.message}`;
+    const updatedMsg = `:tada: ` + `Congrats <@${inputs.receiver}>!!` +
+      ` You just received an nKudo from <@${inputs.user}> \n\n>*nKudo value*: ${inputs.kudo_value} \n>*message*: ${inputs.message}`;
 
     const sampleObject = {
       original_msg: inputs.message,

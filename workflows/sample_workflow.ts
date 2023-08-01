@@ -43,24 +43,29 @@ const inputForm = SampleWorkflow.addStep(
     fields: {
       elements: [
         {
-          name: "channel",
-          title: "Channel to send message to",
-          type: Schema.slack.types.channel_id,
-          // default: "C05JH69RX2A"
-        }, 
-        {
           name: "receiver",
           title: "Receiver",
-          type: Schema.slack.types.user_id
+          type: Schema.slack.types.user_id,
         },
         {
           name: "message",
           title: "Message",
           type: Schema.types.string,
           long: true,
-        }
+        },
+        {
+          name: "kudo_value",
+          title: "Which value?",
+          type: Schema.types.string,
+          enum: [
+            "Team player ⚽️",
+            "Innovation champion 🏆",
+            "Customer driven 🫂",
+            "Leadership ☄️",
+          ],
+        },
       ],
-      required: ["channel", "message"],
+      required: ["receiver", "message", "kudo_value"],
     },
   },
 );
@@ -75,6 +80,8 @@ const inputForm = SampleWorkflow.addStep(
 const sampleFunctionStep = SampleWorkflow.addStep(SampleFunctionDefinition, {
   message: inputForm.outputs.fields.message,
   user: SampleWorkflow.inputs.user,
+  receiver: inputForm.outputs.fields.receiver,
+  kudo_value: inputForm.outputs.fields.kudo_value,
 });
 
 /**
@@ -84,7 +91,7 @@ const sampleFunctionStep = SampleWorkflow.addStep(SampleFunctionDefinition, {
  * https://api.slack.com/automation/functions
  */
 SampleWorkflow.addStep(Schema.slack.functions.SendMessage, {
-  channel_id: inputForm.outputs.fields.channel,
+  channel_id: "C05JH69RX2A",
   message: sampleFunctionStep.outputs.updatedMsg,
 });
 
