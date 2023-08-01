@@ -8,7 +8,7 @@ import objectDatastore from "./datastores/datastore.ts";
  * https://api.slack.com/automation/manifest
  */
 export default Manifest({
-  name: "nkudos-OS",
+  name: "nkudos-hjung",
   description: "A template for building Slack apps with Deno",
   icon: "assets/default_new_app_icon.png",
   workflows: [workflow],
