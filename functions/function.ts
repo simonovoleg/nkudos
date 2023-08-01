@@ -30,7 +30,7 @@ export const functionDefinition = DefineFunction({
         type: Schema.types.string,
         description: "An nKudo value",
       },
-      scope: {
+      private_scope: {
         type: Schema.types.boolean,
         description: "Public or private messages",
       },
@@ -39,12 +39,16 @@ export const functionDefinition = DefineFunction({
   },
   output_parameters: {
     properties: {
-      updatedMsg: {
+      public_message: {
         type: Schema.types.string,
-        description: "Updated message to be posted",
+        description: "Updated public message to be posted",
+      },
+      private_message: {
+        type: Schema.types.string,
+        description: "Updated private message to be posted",
       },
     },
-    required: ["updatedMsg"],
+    required: ["public_message", "private_message"],
   },
 });
 
@@ -61,14 +65,16 @@ export default SlackFunction(
 
     // inputs.user is set from the interactivity_context defined in trigger.ts
     // https://api.slack.com/automation/forms#add-interactivity
-    const updatedMsg = `:tada: ` + `Congrats <@${inputs.receiver}>!!` +
+    const private_message = `:tada: ` + `Congrats <@${inputs.receiver}>!!` +
       ` You just received an nKudo from <@${inputs.user}> \n\n>*nKudo value*: ${inputs.kudo_value} \n>*message*: ${inputs.message} \n\n ${
-        inputs.scope ? "_Sent privately_" : ""
-      }`;
+        inputs.private_scope ? "_Sent privately_ :shushing_face:" : ""
+    }`;
+
+    const public_message = inputs.private_scope ? `:tada: Yay!! Somebody just received nKudos for being awesome in the following category: ${inputs.kudo_value}` : private_message;
 
     const newObject = {
       original_msg: inputs.message,
-      updated_msg: updatedMsg,
+      updated_msg: private_message,
       object_id: uuid,
     };
 
@@ -80,7 +86,7 @@ export default SlackFunction(
         item: newObject,
       },
     );
-
-    return { outputs: { updatedMsg } };
+    console.log(private_message)
+    return { outputs: { public_message: public_message, private_message: private_message } };
   },
 );

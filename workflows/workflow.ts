@@ -65,13 +65,13 @@ const inputForm = workflow.addStep(
           ],
         },
         {
-          name: "scope",
+          name: "private_scope",
           title: "Only send privately?",
           type: Schema.types.boolean,
           default: false,
         },
       ],
-      required: ["receiver", "message", "kudo_value", "scope"],
+      required: ["receiver", "message", "kudo_value", "private_scope"],
     },
   },
 );
@@ -88,7 +88,7 @@ const functionStep = workflow.addStep(functionDefinition, {
   user: workflow.inputs.user,
   receiver: inputForm.outputs.fields.receiver,
   kudo_value: inputForm.outputs.fields.kudo_value,
-  scope: inputForm.outputs.fields.scope,
+  private_scope: inputForm.outputs.fields.private_scope,
 });
 
 /**
@@ -97,14 +97,16 @@ const functionStep = workflow.addStep(functionDefinition, {
  * a message and can be used alongside custom functions in a workflow.
  * https://api.slack.com/automation/functions
  */
+
+
 workflow.addStep(Schema.slack.functions.SendMessage, {
   channel_id: "C05JH69RX2A",
-  message: functionStep.outputs.updatedMsg,
+  message: functionStep.outputs.public_message,
 });
 
 workflow.addStep(Schema.slack.functions.SendDm, {
   user_id: workflow.inputs.user,
-  message: functionStep.outputs.updatedMsg,
+  message: functionStep.outputs.private_message,
 });
 
 export default workflow;
