@@ -64,8 +64,14 @@ const inputForm = workflow.addStep(
             "Leadership ☄️",
           ],
         },
+        {
+          name: "scope",
+          title: "Only send privately?",
+          type: Schema.types.boolean,
+          default: false,
+        },
       ],
-      required: ["receiver", "message", "kudo_value"],
+      required: ["receiver", "message", "kudo_value", "scope"],
     },
   },
 );
@@ -82,6 +88,7 @@ const functionStep = workflow.addStep(functionDefinition, {
   user: workflow.inputs.user,
   receiver: inputForm.outputs.fields.receiver,
   kudo_value: inputForm.outputs.fields.kudo_value,
+  scope: inputForm.outputs.fields.scope,
 });
 
 /**

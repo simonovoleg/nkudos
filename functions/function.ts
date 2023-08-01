@@ -30,6 +30,10 @@ export const functionDefinition = DefineFunction({
         type: Schema.types.string,
         description: "An nKudo value",
       },
+      scope: {
+        type: Schema.types.boolean,
+        description: "Public or private messages",
+      },
     },
     required: ["message"],
   },
@@ -58,7 +62,9 @@ export default SlackFunction(
     // inputs.user is set from the interactivity_context defined in trigger.ts
     // https://api.slack.com/automation/forms#add-interactivity
     const updatedMsg = `:tada: ` + `Congrats <@${inputs.receiver}>!!` +
-      ` You just received an nKudo from <@${inputs.user}> \n\n>*nKudo value*: ${inputs.kudo_value} \n>*message*: ${inputs.message}`;
+      ` You just received an nKudo from <@${inputs.user}> \n\n>*nKudo value*: ${inputs.kudo_value} \n>*message*: ${inputs.message} \n\n ${
+        inputs.scope ? "Sent privately" : ""
+      }`;
 
     const newObject = {
       original_msg: inputs.message,
