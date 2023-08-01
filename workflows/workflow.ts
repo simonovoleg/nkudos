@@ -95,4 +95,9 @@ workflow.addStep(Schema.slack.functions.SendMessage, {
   message: functionStep.outputs.updatedMsg,
 });
 
+workflow.addStep(Schema.slack.functions.SendDm, {
+  user_id: workflow.inputs.user,
+  message: functionStep.outputs.updatedMsg,
+});
+
 export default workflow;
